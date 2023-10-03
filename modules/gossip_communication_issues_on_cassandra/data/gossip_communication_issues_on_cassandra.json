@@ -1,0 +1,186 @@
+{
+  "name": "gossip_communication_issues_on_cassandra",
+  "description": "Gossip Communication Issues refer to problems encountered in the Gossip protocol, which is responsible for node communication and cluster coordination in distributed systems such as Cassandra. When the Gossip protocol experiences issues, it can lead to inconsistencies and disruptions in the communication between nodes, leading to system-wide problems. These issues can arise due to various reasons such as network issues, hardware failures, or bugs in the software. It is crucial to detect and resolve such issues quickly to ensure the smooth functioning of the system.",
+  "params": [
+    {
+      "name": "NODE_IP",
+      "value": ""
+    },
+    {
+      "name": "CASSANDRA_PORT",
+      "value": ""
+    },
+    {
+      "name": "NODE2",
+      "value": ""
+    },
+    {
+      "name": "NODE3",
+      "value": ""
+    },
+    {
+      "name": "ENDPOINTS",
+      "value": ""
+    },
+    {
+      "name": "NODE1",
+      "value": ""
+    },
+    {
+      "name": "INTERVAL",
+      "value": ""
+    },
+    {
+      "name": "HOST_NAME",
+      "value": ""
+    },
+    {
+      "name": "K8S_CLUSTER_NAME",
+      "value": ""
+    },
+    {
+      "name": "NAMESPACE",
+      "value": ""
+    }
+  ],
+  "cells": [
+    {
+      "name": "cell_1",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Gossip Communication Issues on Cassandra\nGossip Communication Issues refer to problems encountered in the Gossip protocol, which is responsible for node communication and cluster coordination in distributed systems such as Cassandra. When the Gossip protocol experiences issues, it can lead to inconsistencies and disruptions in the communication between nodes, leading to system-wide problems. These issues can arise due to various reasons such as network issues, hardware failures, or bugs in the software. It is crucial to detect and resolve such issues quickly to ensure the smooth functioning of the system."
+    },
+    {
+      "name": "cell_2",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check if Cassandra is running"
+    },
+    {
+      "name": "cell_3",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `systemctl status cassandra.service`"
+    },
+    {
+      "name": "cell_4",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check if the Gossip protocol is enabled"
+    },
+    {
+      "name": "cell_5",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `nodetool info | grep -i gossip`"
+    },
+    {
+      "name": "cell_6",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the status of the Gossip protocol"
+    },
+    {
+      "name": "cell_7",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `nodetool gossipinfo`"
+    },
+    {
+      "name": "cell_8",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the communication between nodes"
+    },
+    {
+      "name": "cell_9",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `nodetool ring`"
+    },
+    {
+      "name": "cell_10",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for any errors in the system log related to the Gossip protocol"
+    },
+    {
+      "name": "cell_11",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `journalctl -u cassandra.service | grep -i gossip`"
+    },
+    {
+      "name": "cell_12",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for any network issues that may be causing communication problems"
+    },
+    {
+      "name": "cell_13",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `ping ${NODE_IP}`"
+    },
+    {
+      "name": "cell_14",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for any firewall rules blocking communication between nodes"
+    },
+    {
+      "name": "cell_15",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `iptables -L -n`"
+    },
+    {
+      "name": "cell_16",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for any other processes or applications that may be interfering with Cassandra"
+    },
+    {
+      "name": "cell_17",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `lsof -i :${CASSANDRA_PORT}`"
+    },
+    {
+      "name": "cell_18",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for any performance issues that may be affecting Cassandra"
+    },
+    {
+      "name": "cell_19",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `nodetool tpstats`"
+    },
+    {
+      "name": "cell_20",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Identify and isolate the affected nodes, and then restart them to see if this resolves the issue."
+    },
+    {
+      "name": "cell_21",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "host | host_name=$HOST_NAME | invoke_isolate_and_restart_nodes($NODE2, $NODE3, $NODE1)"
+    },
+    {
+      "name": "cell_22",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Consider adjusting the gossip settings, such as adjusting the gossip interval or increasing the number of endpoints the nodes can communicate with."
+    },
+    {
+      "name": "cell_23",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "host | host_name=$HOST_NAME | invoke_gossip_interval_and_num_endpoints($ENDPOINTS, $INTERVAL)"
+    }
+  ]
+}
